@@ -17,6 +17,12 @@ Built to demonstrate production-grade data skills across the full stack: pipelin
 
 [View Live Dashboard →](https://datastudio.google.com/reporting/7dbc6709-794d-4ecd-90d1-f1caadb1b9b1)
 
+![Page 1 — Executive KPI](docs/dashboard_p1.png)
+![Page 2 — Demand-Supply](docs/dashboard_p2.png)
+![Page 3 — Pricing & Elasticity](docs/dashboard_p3.png)
+![Page 4 — Trends & Seasonality](docs/dashboard_p4.png)
+![Page 5 — Demand Forecast 2026](docs/dashboard_p5.png)
+
 5-page interactive dashboard covering Executive KPI, Demand-Supply, Pricing & Elasticity, Trends & Seasonality, and Demand Forecast 2026.
 
 ---

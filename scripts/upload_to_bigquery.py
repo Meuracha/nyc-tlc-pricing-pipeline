@@ -3,6 +3,7 @@ Upload CSV exports from S3 to BigQuery
 S3 export/ → BigQuery tlc_analytics dataset
 Uses load_table_from_file (reliable) 
 Special handling: monthly_trend gets ds column added
+forecast_full_series: adds Dec 2025 actual to forecast series for line continuity
 """
 import boto3
 import io
@@ -44,6 +45,18 @@ FILES = {
     "fhv_wait_time.csv":             "fhv_wait_time",
 }
 
+def transform_forecast_full_series(df):
+    df["ds"] = pd.to_datetime(df["ds"])
+    # Add Dec 2025 actual row into forecast series for line chart continuity
+    dec_2025 = df[
+        (df["ds"].astype(str).str.startswith("2025-12")) &
+        (df["type"] == "actual")
+    ].copy()
+    dec_2025["type"] = "forecast"
+    df = pd.concat([df, dec_2025]).sort_values(["type", "ds"]).reset_index(drop=True)
+    print(f"    forecast series starts: {df[df['type']=='forecast']['ds'].min()}")
+    return df
+
 # Tables that need special transformation before upload
 TRANSFORMS = {
     "monthly_trend": lambda df: df.assign(
@@ -52,9 +65,10 @@ TRANSFORMS = {
     "congestion_monthly": lambda df: df.assign(
         ds=pd.to_datetime(df["month"].apply(lambda m: f"2024-{m:02d}-01"))
     ),
-    "forecast_full_series": lambda df: df.assign(
-        ds=pd.to_datetime(df["ds"])
-    ),
+    "ab_test_by_tier": lambda df: df.assign(
+        result=df["significant"].apply(lambda x: "✅ pass" if x else "✗ fail")
+    ).drop(columns=["significant"]),
+    "forecast_full_series": transform_forecast_full_series,
     "forecast_2026": lambda df: df.assign(
         ds=pd.to_datetime(df["ds"])
     ),
@@ -83,7 +97,6 @@ for csv_file, table_name in FILES.items():
         obj  = s3.get_object(Bucket=S3_BUCKET, Key=s3_key)
         data = obj["Body"].read()
 
-        # apply transform if needed
         if table_name in TRANSFORMS:
             df   = pd.read_csv(io.BytesIO(data))
             df   = TRANSFORMS[table_name](df)
