@@ -71,7 +71,7 @@ Q1 apples-to-apples comparison across 2022–2026. Q1 2026 shows -10.4% demand d
 
 ## Data Pipeline
 
-![Pipeline](docs/nyc_tlc_pipeline.svg)
+![Pipeline](docs/pipeline.svg)
 
 ```
 NYC TLC Web
@@ -199,4 +199,4 @@ nyc-tlc-pricing/
 
 ---
 
-*Dataset: NYC Taxi & Limousine Commission (TLC) public data — [data.cityofnewyork.us](https://data.cityofnewyork.us)*
+*Dataset: NYC Taxi & Limousine Commission (TLC) public data — [nyc.gov/tlc](https://www.nyc.gov/site/tlc/about/tlc-trip-record-data.page)*
